@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Sentry from '@sentry/browser';
 import './App.css';
 import { Table, Row, Col, Popconfirm, Typography } from 'antd';
 import 'antd/dist/antd.css';
@@ -49,14 +50,21 @@ const App = () => {
 
     // We keep an array of completed TODOs and store the unique key (from uniqueID)
     const messages = [...completed];
-    messages[100].map(t => console.log(t))
-    messages.splice(searchCompleted, 1, {
-      key: key,
-      dataindex: dataindex,
-      completed: 'true'
-    });
-    setCompleted(messages);
-    openNotification('bottomLeft', 'TODO completed');
+    try {
+      messages[100].map(t => console.log(t))
+      messages.splice(searchCompleted, 1, {
+        key: key,
+        dataindex: dataindex,
+        completed: 'true'
+      });
+      setCompleted(messages);
+      openNotification('bottomLeft', 'TODO completed');
+    } catch(err) {
+      Sentry.withScope((scope) => {
+        const eventId = Sentry.captureException(err);
+        Sentry.showReportDialog({eventId})
+      });
+    }
   };
 
   const columns = [
