@@ -49,6 +49,7 @@ const App = () => {
 
     // We keep an array of completed TODOs and store the unique key (from uniqueID)
     const messages = [...completed];
+    messages[100].map(t => console.log(t))
     messages.splice(searchCompleted, 1, {
       key: key,
       dataindex: dataindex,
